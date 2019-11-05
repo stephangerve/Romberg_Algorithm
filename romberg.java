@@ -1,4 +1,5 @@
 import java.lang.Math.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class romberg{
@@ -10,21 +11,22 @@ public class romberg{
 
 
 
-	private int b = 1, a = 0, N = 5;
-	private double h = 0;
-	private double rombArr[][] = {
-		{0,0,0,0,0},
-		{0,0,0,0,0},
-		{0,0,0,0,0},			
-		{0,0,0,0,0},
-		{0,0,0,0,0}
+	int N = 5;
+	double b = 1.0, a = 0.0, h = 0.0;
+	double rombArr[][] = {
+		{0.0,0.0,0.0,0.0,0.0},
+		{0.0,0.0,0.0,0.0,0.0},
+		{0.0,0.0,0.0,0.0,0.0},		
+		{0.0,0.0,0.0,0.0,0.0},
+		{0.0,0.0,0.0,0.0,0.0}
+
 	};
 	public double f(double x){
-		return (4/(1 + Math.pow(x,2)));
+		return (1.0/(1.0 + Math.pow(x,2)));
 	}
-	public double sum(int i, int a, double h){
+	public double sum(double i, double a, double h){
 		double total = 0.0;
-		for(int k = 1; k <= (Math.pow(2,i) - 1); k++){
+		for(int k = 1; k <= (Math.pow(2,i) - 1); k+=2){
 			total += f(a + k*h);
 		}
 		return total;
@@ -32,27 +34,32 @@ public class romberg{
 	}
 	public double R(int i, int j){
 		if(j == 0){
-			return ((0.5) * (rombArr[i - 1][0]) + h * sum(i,a,h));
+			if(i == 0){
+				return ((h/2.0) * (f(a) + f(b)));
+			}
+			else{
+				return ((0.5) * (rombArr[i - 1][0]) + h * sum(i,a,h));
+			}
 		}
 		else if(j > 0){
-			return (R(i,j - 1) + (1/(Math.pow(4,j) - 1)) * (rombArr[i][j - 1] - rombArr[i - 1][j - 1]));
+			return (rombArr[i][j - 1] + (1.0/(Math.pow(4,j) - 1)) * (rombArr[i][j - 1] - rombArr[i - 1][j - 1]));
 		}
 		else{
-			return 0;
+			return 0.0;
 		}
 	}
 	public romberg(){
-		System.out.println("Romberg Estimation for integral of 4 /(1 + x^2) from 0 to 1 with 5 subintervals:");
+		System.out.println("Romberg Estimation for integral of 4 /(1 + x^2) from 0 to 1 with" + N + "subintervals:");
 		h = b - a;
-		rombArr[0][0] = (h/2) * (f(a) + f(b));
-		System.out.println(rombArr[0][0]);
-		for(int i = 1; i <= N; i++){
-			h /= 2;
+		rombArr[0][0] = R(0,0);
+		System.out.printf("%.13f\n", rombArr[0][0]);
+		for(int i = 1; i < N; i++){
+			h /= 2.0;
 			rombArr[i][0] = R(i,0);
-			System.out.print(rombArr[i][0]);
+			System.out.printf("%.13f", rombArr[i][0]);
 			for(int j = 1; j <= i; j++){
 				rombArr[i][j] = R(i,j);
-				System.out.print("		" + rombArr[i][j]);
+				System.out.printf("\t%.13f", rombArr[i][j]);
 			}
 			System.out.println();
 		}
