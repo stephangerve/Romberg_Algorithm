@@ -56,7 +56,7 @@ public class romberg{
 		}
 	}
 	public romberg(){
-		System.out.println("Romberg Estimation for integral of 4 /(1 + x^2) from 0 to 1 with " + N + " subintervals:");
+		System.out.println("Romberg Estimation for integral of 4 /(1 + x^2) from 0 to 1 with 2^" + N + " subintervals:");
 		//initial step size
 		h = b - a;
 		//first estimation
